@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wedding Invitation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f1c8e0;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      max-width: 90vw;
+      width: 100%;
+      text-align: center;
+      overflow-y: auto;
+      max-height: 90vh;
+    }
+
+    .card-header h1 {
+      font-size: 32px;
+      font-family: 'Playfair Display', serif;
+      color: #b55050;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .card-header h2 {
+      font-size: 24px;
+      color: #6e4b3c;
+      margin-top: 10px;
+    }
+
+    .tagline {
+      font-size: 16px;
+      color: #555;
+      margin: 10px 0;
+      font-style: italic;
+    }
+
+    .input-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .input-section input {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      margin: 5px;
+      width: 80%;
+      max-width: 300px;
+    }
+
+    .input-section button {
+      padding: 10px;
+      background-color: #b55050;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 80%;
+      max-width: 300px;
+      margin-top: 10px;
+    }
+
+    .input-section button:hover {
+      background-color: #9c4a4a;
+    }
+
+    .admin-button {
+      margin-top: 20px;
+    }
+
+    .admin-button a {
+      color: #b55050;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    table {
+      margin-top: 20px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #b55050;
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      .card-header h1 {
+        font-size: 24px;
+      }
+
+      .card-header h2 {
+        font-size: 20px;
+      }
+
+      .input-section input, .input-section button {
+        width: 100%;
+        max-width: unset;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card-header">
+      <h1>Rahul Srivastava & Divya Srivastava</h1>
+      <h2>We're getting married!</h2>
+      <p class="tagline">A meeting of two souls, bound by love and destiny.<br>
+        Together we are stronger, together we are home.<br>
+        Celebrating love, life, and foreverness.</p>
+    </div>
+
+    <table>
+      <tr>
+        <th>Event</th>
+        <th>Date</th>
+        <th>Venue</th>
+      </tr>
+      <tr>
+        <td>Marriage Ceremony</td>
+        <td>13 April 2025</td>
+        <td>Partapgarh</td>
+      </tr>
+      <tr>
+        <td>Reception</td>
+        <td>16 April 2025</td>
+        <td>Rampur</td>
+      </tr>
+    </table>
+
+    <div class="input-section">
+      <form id="attendance-form">
+        <input type="text" id="name" placeholder="Enter your name" required>
+        <input type="date" id="date" required>
+        <button type="submit">RSVP</button>
+      </form>
+    </div>
+    <div class="admin-button">
+      <a href="admin3.html">Admin Panel</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCwsYufFnaWi8abdHBnpkX26Fl-_rjjql0",
+      authDomain: "shadi-282f3.firebaseapp.com",
+      projectId: "shadi-282f3",
+      storageBucket: "shadi-282f3.appspot.com",
+      messagingSenderId: "560917273677",
+      appId: "1:560917273677:web:c5aa02266f9cb889f15004"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById('attendance-form').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const date = document.getElementById('date').value;
+
+      if (name && date) {
+        try {
+          await addDoc(collection(db, "attendees"), {
+            name: name,
+            date: date,
+            createdAt: new Date()
+          });
+          alert(`Thank you, ${name}! You have confirmed your attendance for the wedding on ${date}.`);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
